@@ -1,0 +1,42 @@
+name: Amputation
+version: '1.0'
+main: top.modpotato.AmputationPlugin
+api-version: '1.21'
+commands:
+  untwist:
+    description: Reset all limb sacrifices
+    usage: /untwist
+    permission: amputation.untwist
+  activateamputation:
+    description: Activate the plugin and force all players to choose a limb
+    usage: /activateamputation
+    permission: amputation.activate
+  chooselimb:
+    description: Open the limb selection menu for a player
+    usage: /chooselimb <player>
+    permission: amputation.chooselimb
+  retwisttimer:
+    description: Start a timer after which all players must re-choose their limbs
+    usage: /retwisttimer [hours (decimals allowed)] or /retwisttimer end
+    permission: amputation.retwisttimer
+  amputationstatus:
+    description: Check if the amputation plugin is active and see player statistics
+    usage: /amputationstatus
+    permission: amputation.status
+
+permissions:
+  amputation.untwist:
+    description: Allows resetting all limb sacrifices
+    default: op
+  amputation.activate:
+    description: Allows activating the plugin
+    default: op
+  amputation.chooselimb:
+    description: Allows opening the limb selection menu for players
+    default: op
+  amputation.retwisttimer:
+    description: Allows starting and stopping the re-twist timer
+    default: op
+  amputation.status:
+    description: Allows checking the plugin status
+    default: true

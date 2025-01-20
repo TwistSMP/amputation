@@ -1,0 +1,68 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        
+    - name: Install Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 8.5
+    
+    - name: Build with Gradle
+      run: gradle build
+
+    - name: Get Version
+      id: get_version
+      shell: bash
+      run: |
+        VERSION=$(grep '^version = ' build.gradle.kts | cut -d '"' -f2)
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Amputation-v${{ steps.get_version.outputs.version }}
+        path: build/libs/Amputation*.jar
+        compression-level: 0 
+
+    - name: Check if release exists
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: check_release
+      uses: cardinalby/git-get-release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag: v${{ steps.get_version.outputs.version }}
+        doNotFailIfNotFound: true
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.check_release.outputs.id == ''
+      uses: softprops/action-gh-release@v2
+      with:
+        name: v${{ steps.get_version.outputs.version }}
+        tag_name: v${{ steps.get_version.outputs.version }}
+        files: build/libs/Amputation-${{ steps.get_version.outputs.version }}.jar
+        draft: false
+        prerelease: false
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        token: ${{ secrets.GITHUB_TOKEN }} 
