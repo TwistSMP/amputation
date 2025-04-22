@@ -2,6 +2,8 @@
 
 A Minecraft plugin that adds a unique twist to survival gameplay by requiring players to sacrifice a body part, each with its own unique challenges and effects.
 
+![in a dark room a minecraft player has just cut the left arm off of another player](./art/art.webp)
+
 ## Features
 
 ### Limb Sacrifice System
